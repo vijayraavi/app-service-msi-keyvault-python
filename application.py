@@ -3,6 +3,7 @@ from azure.keyvault import KeyVaultClient
 import os
 
 from flask import Flask
+from flask import render_template
 app = Flask(__name__)
 
 
@@ -43,13 +44,22 @@ def run_example():
         "nodesecret",       # Name of your secret. If you followed the README 'secret' should exists
         ""              # The version of the secret. Empty string for latest
     )
-    return "My secret value is {}".format(secret.value)
+    return secret.value
 
 
 @app.route('/')
 def hello_world():
     try:
-        return run_example()
+        secret = run_example()
+        return '''
+<html>
+    <head>
+        <title>Home Page - Microblog</title>
+    </head>
+    <body>
+        <h1>Your secret is ''' + secret + '''!</h1>
+    </body>
+</html>'''
     except Exception as err:
         return str(err)
 
