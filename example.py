@@ -6,7 +6,7 @@ from flask import Flask
 app = Flask(__name__)
 
 
-KEY_VAULT_URI = None  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
+KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
 
 
 def get_key_vault_credentials():
@@ -40,7 +40,7 @@ def run_example():
 
     secret = key_vault_client.get_secret(
         key_vault_uri,  # Your KeyVault URL
-        "secret",       # Name of your secret. If you followed the README 'secret' should exists
+        "nodesecret",       # Name of your secret. If you followed the README 'secret' should exists
         ""              # The version of the secret. Empty string for latest
     )
     return "My secret value is {}".format(secret.value)
