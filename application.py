@@ -47,14 +47,21 @@ def run_example():
     return secret.value
 
 
-@app.route('/')
+@app.route('/', methods = ['POST', 'GET'])
 def hello_world():
-    try:
-        secret = run_example()
-        return render_template('secret_found.html', title='Secret Found', secret=secret)
-    except Exception as err:
-        return str(err)
-
+    if request.method == 'POST':
+        try:
+            keyVaultName = request.form['keyVaultName']
+            secretName = request.form['secretName']
+            secret = run_example()
+            return render_template('secret_found.html', title='Secret Found', secret=secret, keyVaultName=keyVaultName, secretName=secretName)
+        except Exception as err:
+            return str(err)
+    else:
+        try:
+            return render_template('submit_secret.html')
+        except Exception as err:
+            return str(err)
 
 @app.route('/ping')
 def ping():
