@@ -51,15 +51,7 @@ def run_example():
 def hello_world():
     try:
         secret = run_example()
-        return '''
-<html>
-    <head>
-        <title>Home Page - Microblog</title>
-    </head>
-    <body>
-        <h1>Your secret is ''' + secret + '''!</h1>
-    </body>
-</html>'''
+        return render_template('secret_found.html', title='Secret Found', secret=secret)
     except Exception as err:
         return str(err)
 
