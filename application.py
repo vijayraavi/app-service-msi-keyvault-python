@@ -5,11 +5,19 @@ import os
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask_wtf import FlaskForm
+from wtfforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
 app = Flask(__name__)
 
 
 KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
 
+class KVForm(FlaskForm):
+    keyVaultName = StringField('Key Vault Name', validators=[DataRequired()])
+    secretName = StringField('Secret Name', validators=[DataRequired()])
+    submit = SubmitField('Get My Secret')
 
 def get_key_vault_credentials():
     """This tries to get a token using MSI, or fallback to SP env variables.
@@ -49,24 +57,16 @@ def run_example():
 
 
 @app.route('/', methods = ['POST', 'GET'])
-def hello_world():
-    if request.method == 'POST':
-        try:
-            keyVaultName = request.form['keyVaultName']
-            secretName = request.form['secretName']
+def default_page():
+    try:
+        form = KVForm()
+        if form.validate_on_submit():
             secret = run_example()
-            return render_template('secret_found.html', title='Secret Found', secret=secret, keyVaultName=keyVaultName, secretName=secretName)
-        except Exception as err:
-            return str(err)
-    else:
-        try:
-            return render_template('submit_secret.html')
-        except Exception as err:
-            return str(err)
+            return render_template('secret_found.html', title='Secret Found', secret=secret, keyVaultName=form.keyVaultName.data, secretName=form.secretName.data)
+        return render_template('submit_secret', title='Submit Secret Info', form=form)
 
-@app.route('/ping')
-def ping():
-    return "Hello world"
+    except Exception as err:
+        return str(err)
 
 
 if __name__ == '__main__':
