@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from flask import render_template
 from flask import request
-from flask_wtf import FlaskForm
+from flask_wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
 
-class KVForm(FlaskForm):
+class KVForm(Form):
     keyVaultName = StringField('Key Vault Name', validators=[DataRequired()])
     secretName = StringField('Secret Name', validators=[DataRequired()])
     submit = SubmitField('Get My Secret')
