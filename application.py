@@ -6,7 +6,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask_wtf import FlaskForm
-from wtfforms import StringField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 app = Flask(__name__)
