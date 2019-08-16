@@ -14,8 +14,6 @@ app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-#KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
-
 class KVForm(FlaskForm):
     keyVaultName = StringField('Key Vault Name', validators=[DataRequired()])
     secretName = StringField('Secret Name', validators=[DataRequired()])
@@ -48,13 +46,12 @@ def run_example(key_vault_name, secret_name):
         credentials
     )
 
-    #key_vault_uri = os.environ.get("KEY_VAULT_URI", KEY_VAULT_URI)
-
+    # Construct the vault uri
     key_vault_uri = "https://" + key_vault_name + ".vault.azure.net/"
 
     secret = key_vault_client.get_secret(
-        key_vault_uri,  # Your KeyVault URL
-        secret_name,       # Name of your secret. If you followed the README 'secret' should exists
+        key_vault_uri,  # Your KeyVault URI
+        secret_name,       # Name of your secret.
         ""              # The version of the secret. Empty string for latest
     )
     return secret.value
