@@ -65,7 +65,7 @@ def default_page():
         if form.validate_on_submit():
             secret = run_example()
             return render_template('secret_found.html', title='Secret Found', secret=secret, keyVaultName=form.keyVaultName.data, secretName=form.secretName.data)
-        return render_template('submit_secret', title='Submit Secret Info', form=form)
+        return render_template('submit_secret.html', title='Submit Secret Info', form=form)
 
     except Exception as err:
         return str(err)
