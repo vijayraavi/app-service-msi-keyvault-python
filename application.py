@@ -14,7 +14,7 @@ app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
+#KEY_VAULT_URI = "https://nodekv.vault.azure.net/"  # Replace by something like "https://xxxxxxxxx.vault.azure.net/"
 
 class KVForm(FlaskForm):
     keyVaultName = StringField('Key Vault Name', validators=[DataRequired()])
@@ -37,7 +37,7 @@ def get_key_vault_credentials():
         )
 
 
-def run_example():
+def run_example(key_vault_name, secret_name):
     """MSI Authentication example."""
 
     # Get credentials
@@ -48,11 +48,13 @@ def run_example():
         credentials
     )
 
-    key_vault_uri = os.environ.get("KEY_VAULT_URI", KEY_VAULT_URI)
+    #key_vault_uri = os.environ.get("KEY_VAULT_URI", KEY_VAULT_URI)
+
+    key_vault_uri = "https://" + key_vault_name + ".vault.azure.net/"
 
     secret = key_vault_client.get_secret(
         key_vault_uri,  # Your KeyVault URL
-        "nodesecret",       # Name of your secret. If you followed the README 'secret' should exists
+        secret_name,       # Name of your secret. If you followed the README 'secret' should exists
         ""              # The version of the secret. Empty string for latest
     )
     return secret.value
@@ -63,7 +65,7 @@ def default_page():
     try:
         form = KVForm()
         if form.validate_on_submit():
-            secret = run_example()
+            secret = run_example(form.keyVaultName.data, form.secretName.data)
             return render_template('secret_found.html', title='Secret Found', secret=secret, keyVaultName=form.keyVaultName.data, secretName=form.secretName.data)
         return render_template('submit_secret.html', title='Submit Secret Info', form=form)
 
